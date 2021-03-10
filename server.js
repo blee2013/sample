@@ -4,6 +4,11 @@ const app = express();
 
 const { animals } = require('./data/animals');
 
+function findById(id, animalsArray) {
+    const result = animalsArray.filter(animal => animal.id === id)[0];
+    return result;
+}
+
 function filterByQuery(query, animalsArray) {
     let personalityTraitsArray = [];
     //note tht we save the animalsArray as filterResults here:
@@ -18,7 +23,7 @@ function filterByQuery(query, animalsArray) {
         }
         //loop through each trait in the personalityTraits array:
         personalityTraitsArray.forEach(trait => {
-            // Check the trait against each animal in the filteredResults array.
+            // Check the trait aganst each animal in the filteredResults array.
             // Remember, it is initially a copy of the animalsArray,
             // but here we're updating it for each trait in the .forEach() loop.
             // For each trait being targeted by the filter, the filteredResults
@@ -42,6 +47,15 @@ function filterByQuery(query, animalsArray) {
     //return the filtered results:
     return filteredResults;
 }
+
+app.get('/api/animals/:id', (req, res) => {
+    const result = findById(req.params.id, animals);
+    if (result) {
+    res.json(result);
+    } else {
+        res.send(404);
+    }
+});
 
 
 app.get('/api/animals', (req, res) => {
